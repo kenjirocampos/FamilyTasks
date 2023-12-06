@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">FamilyTasks</string>
+    <string name="title_activity_registro">RegistroActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="item1">Nueva tarea</string>
+    <string name="item2">Tareas generales</string>
+    <string name="item3">Mis tareas</string>
+    <string name="item4">Ver arbol</string>
+    <string name="item5">Configuración</string>
+    <string name="tareas_generales">Tareas generales</string>
+    <string name="Pie_pagina">Aplicacion evaluada para la carrera de Ingeneria en Informatica Universidad Santo Tomas</string>
+    <string name="Titulo">Tareas Familiares</string>
+    <string name="title_activities" />
+    <string name="guardar_tarea">Guardar tarea</string>
+    <string name="nueva_tarea">Detalles de la tarea</string>
+    <string name="fecha_de_termino">Fecha de termino</string>
+    <string name="nombre_de_la_tarea">Nombre de la tarea</string>
+    <string name="Completo">Completo</string>
+    <string name="Incompleto">Incompleto</string>
+    <string name="estado_de_la_tarea">Estado de la tarea</string>
+</resources>
