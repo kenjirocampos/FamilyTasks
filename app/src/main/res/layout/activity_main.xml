@@ -93,22 +93,20 @@
             android:orientation="vertical"
             tools:ignore="UselessParent">
 
-            <TextView
-                android:id="@+id/textView"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:fontFamily="@font/barlow"
-                android:gravity="center"
-                android:text="@string/tareas_generales"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                tools:ignore="VisualLintBounds" />
+                android:background="@android:color/holo_green_light"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@color/design_default_color_secondary"
+                app:tabMode="fixed"
+                app:tabTextColor="@android:color/white" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvGeneral"
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="544dp" />
+                android:layout_height="531dp" />
 
         </LinearLayout>
 

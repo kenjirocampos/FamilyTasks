@@ -98,27 +98,58 @@
                 android:textColorHint="#757575"
                 tools:ignore="Autofill" />
 
-            <EditText
-                android:id="@+id/editFechaInicio"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Fecha de inicio"
-                android:inputType="date"
-                android:minHeight="48dp"
-                android:textColorHint="#757575"
-                tools:ignore="Autofill,HardcodedText" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/editFechaTermino"
+                <Button
+                    android:id="@+id/btnFechaInicio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_weight="40"
+                    android:text="Inicio" />
+
+                <EditText
+                    android:id="@+id/editFechaInicio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="60"
+                    android:hint="Fecha de inicio"
+                    android:inputType="date"
+                    android:minHeight="48dp"
+                    android:enabled="false"
+                    android:textColorHint="#757575"
+                    tools:ignore="Autofill,HardcodedText" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/fecha_de_termino"
-                android:inputType="date"
-                android:minHeight="48dp"
-                android:textColorHint="#757575"
-                tools:ignore="Autofill" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnFechaTermino"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="40"
+                    android:text="Final" />
+
+                <EditText
+                    android:id="@+id/editFechaTermino"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="60"
+                    android:ems="10"
+                    android:hint="@string/fecha_de_termino"
+                    android:inputType="date"
+                    android:enabled="false"
+                    android:minHeight="48dp"
+                    android:textColorHint="#757575"
+                    tools:ignore="Autofill" />
+            </LinearLayout>
 
             <Switch
                 android:id="@+id/estadoSW"
@@ -128,9 +159,9 @@
                 android:fontFamily="@font/barlow"
                 android:hint="@string/estado_de_la_tarea"
                 android:minHeight="48dp"
+                android:textColorHint="#757575"
                 android:textOff="@string/Incompleto"
                 android:textOn="@string/Completo"
-                android:textColorHint="#757575"
                 android:textSize="18sp" />
 
         </LinearLayout>

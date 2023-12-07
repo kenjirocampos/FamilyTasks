@@ -88,38 +88,59 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.MiViewHolder>{
         holder.btnCollapse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                notifyDataSetChanged();
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 String idUsuario = currentUser.getUid();
                 String idTarea = task.getIdTarea();
                 DocumentReference idUsuarioRef = db.collection("familyTask").document(idTarea);
-                idUsuarioRef.update("idUsuario",idUsuario).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d(TAG, "Documento actualizado");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Falla al actualizar", e);
-                    }
-                });
+
+                idUsuarioRef.update("idUsuario", idUsuario)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Log.d(TAG, "Documento actualizado");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Falla al actualizar", e);
+                            }
+                        });
+
                 boolean estado = task.isEstadoAsignado();
-                if(estado){estado=false;}else{estado=true;}
-                idUsuarioRef.update("estadoAsignado",estado).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.d(TAG, "Documento actualizado");
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Falla al actualizar", e);
-                    }
-                });
-                notifyDataSetChanged();
+                idUsuarioRef.update("estadoAsignado", !estado)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Log.d(TAG, "Documento actualizado");
+                                task.setEstadoAsignado(!estado);
+
+                                DocumentReference AsignadoRef = db.collection("familyTask").document(idTarea);
+
+                                AsignadoRef.update("estadoAsignado", !estado)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                Log.d(TAG, "Documento actualizado");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Falla al actualizar", e);
+                                            }
+                                        });
+                                notifyDataSetChanged();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Falla al actualizar", e);
+                            }
+                        });
             }
         });
     }

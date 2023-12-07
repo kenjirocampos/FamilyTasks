@@ -66,7 +66,8 @@ FirebaseUser currentUser;
         mAuth.signInWithEmailAndPassword(emailUsuario, passUsuario).addOnCompleteListener(task -> {
         if(task.isSuccessful()){
             if(cbEstado.isChecked()) {
-                SharedPreferences preferences = getSharedPreferences(currentUser.getUid(), MODE_PRIVATE);
+                String currentUserID = String.valueOf(mAuth.getCurrentUser().getUid());
+                SharedPreferences preferences = getSharedPreferences(currentUserID, MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
                 editor.putBoolean("isLoggedIn", true);
                 editor.apply();
@@ -86,7 +87,6 @@ FirebaseUser currentUser;
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
                         String nombre = documentSnapshot.getString("nombreUsuario");
-                        String email = documentSnapshot.getString("correoUsuario");
                         Toast.makeText(LoginActivity.this, "Bienvenido " + nombre, Toast.LENGTH_SHORT).show();
                     }
                 }

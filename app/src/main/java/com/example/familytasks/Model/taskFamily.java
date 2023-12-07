@@ -25,6 +25,10 @@ public class taskFamily {
     }
     public taskFamily(){}
 
+    public void setEstadoAsignado(boolean estadoAsignado) {
+        this.estadoAsignado = estadoAsignado;
+    }
+
     public String getIdUsuario() {
         return idUsuario;
     }
