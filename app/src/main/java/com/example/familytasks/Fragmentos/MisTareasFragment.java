@@ -1,4 +1,4 @@
-package com.example.familytasks.Adapter;
+package com.example.familytasks.Fragmentos;
 
 import static android.content.ContentValues.TAG;
 
@@ -18,6 +18,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.familytasks.Adapter.taskAdapter;
+import com.example.familytasks.MainActivity;
 import com.example.familytasks.Model.taskFamily;
 import com.example.familytasks.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,20 +37,27 @@ public class MisTareasFragment extends Fragment{
     FirebaseAuth mAuth;
     FirebaseUser currentUser;
     RecyclerView recyclerView;
-    ArrayList<taskFamily> list;
+    ArrayList<taskFamily> list= new ArrayList<>();;
     taskAdapter taskAdapter1;
     FirebaseFirestore db;
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mis_tareas, container, false);
+        recyclerView = view.findViewById(R.id.rvMisTareas);
+        cargarDatos();
+        return view;
+    }
+
+    public void cargarDatos() {
+        if (!isAdded()) {
+            return;
+        }
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        recyclerView = view.findViewById(R.id.rvMisTareas);
         db = FirebaseFirestore.getInstance();
-        list = new ArrayList<>();
-        taskAdapter1 = new taskAdapter(requireContext(),list);
-        taskAdapter1.notifyDataSetChanged();
+        taskAdapter1 = new taskAdapter((MainActivity) getActivity(),requireContext(),list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(taskAdapter1);
+
         db.collection("familyTask").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -58,16 +67,16 @@ public class MisTareasFragment extends Fragment{
                         String uno = document.getString("idUsuari o");
                         String dos = mAuth.getCurrentUser().getUid();
                         if(document.getString("idUsuario").equals(mAuth.getCurrentUser().getUid())){
-                        String idTarea = document.getId();
-                        String fechaTermino = document.getString("fechaTermino");
-                        String nombreTarea = document.getString("nombreTarea");
-                        String detalleTarea = document.getString("detalleTarea");
-                        String fechaInicio = document.getString("fechaInicio");
-                        boolean estadoTarea = document.getBoolean("estadoTarea");
-                        boolean estadoAsignado = document.getBoolean("estadoAsignado");
-                        String idUsuario = mAuth.getCurrentUser().getUid();
-                        list.add(new taskFamily(nombreTarea,detalleTarea,fechaInicio,fechaTermino,estadoTarea,estadoAsignado,idTarea,idUsuario));
-                        Log.d(TAG, document.getId() + " => " + document.getData());
+                            String idTarea = document.getId();
+                            String fechaTermino = document.getString("fechaTermino");
+                            String nombreTarea = document.getString("nombreTarea");
+                            String detalleTarea = document.getString("detalleTarea");
+                            String fechaInicio = document.getString("fechaInicio");
+                            boolean estadoTarea = document.getBoolean("estadoTarea");
+                            boolean estadoAsignado = document.getBoolean("estadoAsignado");
+                            String idUsuario = document.getString("idUsuario");
+                            list.add(new taskFamily(nombreTarea,detalleTarea,fechaInicio,fechaTermino,estadoTarea,estadoAsignado,idTarea,idUsuario));
+                            Log.d(TAG, document.getId() + " => " + document.getData());
                         }
                     }
                     taskAdapter1.notifyDataSetChanged();
@@ -77,6 +86,5 @@ public class MisTareasFragment extends Fragment{
             }
         });
         taskAdapter1.notifyDataSetChanged();
-        return view;
     }
 }

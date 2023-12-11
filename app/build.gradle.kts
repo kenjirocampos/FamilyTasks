@@ -48,5 +48,5 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.firebaseui:firebase-ui-firestore:8.0.2")
-    implementation ("com.google.android.material:material:1.5.0")
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
 }

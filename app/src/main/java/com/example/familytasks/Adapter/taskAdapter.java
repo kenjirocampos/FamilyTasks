@@ -2,6 +2,7 @@ package com.example.familytasks.Adapter;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import java.util.HashMap;
@@ -18,11 +19,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.familytasks.MainActivity;
 import com.example.familytasks.Model.taskFamily;
 import com.example.familytasks.R;
+import com.example.familytasks.RegistroActivity;
 import com.example.familytasks.nueva_tarea;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -40,9 +43,16 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.MiViewHolder>{
     Context context;
     ArrayList<taskFamily> taskFamilyArrayList;
 
-    public taskAdapter(Context context, ArrayList<taskFamily> taskFamilyArrayList) {
+    private MainActivity mainActivity;
+
+    public taskAdapter(MainActivity mainActivity, Context context, ArrayList<taskFamily> taskFamilyArrayList) {
         this.context = context;
         this.taskFamilyArrayList = taskFamilyArrayList;
+        this.mainActivity = mainActivity;
+    }
+
+    public interface OnPageChangeListener {
+        void onPageChanged();
     }
 
     @NonNull
@@ -55,7 +65,7 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.MiViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MiViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MiViewHolder holder, @SuppressLint("RecyclerView") int position) {
         taskFamily task = taskFamilyArrayList.get(position);
         boolean isExpanded = expandableMap.get(position) != null && expandableMap.get(position);
         holder.bottomContainer.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
@@ -77,7 +87,7 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.MiViewHolder>{
         holder.detalleTarea.setText(task.getDetalleTarea());
         holder.fechaInicio.setText((task.getFechaInicio()));
         holder.fechaTermino.setText(task.getFechaTermino());
-        if(task.isEstadoAsignado()){
+        if(task.isEstadoAsignado() == true){
             holder.btnCollapse.setBackgroundColor(Color.parseColor("GREEN"));
             holder.btnCollapse.setText("Asignado");
         }else{
@@ -92,55 +102,114 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.MiViewHolder>{
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 FirebaseUser currentUser = mAuth.getCurrentUser();
                 String idUsuario = currentUser.getUid();
+                String idUsuarioCard = task.getIdUsuario();
                 String idTarea = task.getIdTarea();
                 DocumentReference idUsuarioRef = db.collection("familyTask").document(idTarea);
-
-                idUsuarioRef.update("idUsuario", idUsuario)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d(TAG, "Documento actualizado");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Falla al actualizar", e);
-                            }
-                        });
-
                 boolean estado = task.isEstadoAsignado();
-                idUsuarioRef.update("estadoAsignado", !estado)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Log.d(TAG, "Documento actualizado");
-                                task.setEstadoAsignado(!estado);
+                if (idUsuarioCard == "") {
+                    idUsuarioRef.update("idUsuario", idUsuario)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.d(TAG, "Documento actualizado");
+                                    mainActivity.mandarTexto("Asignada existosamente");
+                                    notifyItemChanged(position);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Falla al actualizar", e);
+                                    mainActivity.mandarTexto("Fallo al asignar");
+                                }
+                            });
 
-                                DocumentReference AsignadoRef = db.collection("familyTask").document(idTarea);
 
-                                AsignadoRef.update("estadoAsignado", !estado)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                Log.d(TAG, "Documento actualizado");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Falla al actualizar", e);
-                                            }
-                                        });
-                                notifyDataSetChanged();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w(TAG, "Falla al actualizar", e);
-                            }
-                        });
+                    idUsuarioRef.update("estadoAsignado", !estado)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.d(TAG, "Documento actualizado");
+                                    task.setEstadoAsignado(!estado);
+
+                                    DocumentReference AsignadoRef = db.collection("familyTask").document(idTarea);
+
+                                    AsignadoRef.update("estadoAsignado", !estado)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Log.d(TAG, "Documento actualizado");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Falla al actualizar", e);
+                                                }
+                                            });
+                                    notifyDataSetChanged();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Falla al actualizar", e);
+                                }
+                            });
+
+                } else if (idUsuarioCard.equals(idUsuario)) {
+                    idUsuarioRef.update("idUsuario", "")
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.d(TAG, "Documento actualizado");
+                                    mainActivity.mandarTexto("Desasignada existosamente");
+                                    notifyItemChanged(position);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Falla al actualizar", e);
+                                    mainActivity.mandarTexto("Fallo al asignar");
+                                }
+                            });
+
+
+                    idUsuarioRef.update("estadoAsignado", !estado)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Log.d(TAG, "Documento actualizado");
+                                    task.setEstadoAsignado(!estado);
+
+                                    DocumentReference AsignadoRef = db.collection("familyTask").document(idTarea);
+
+                                    AsignadoRef.update("estadoAsignado", !estado)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    Log.d(TAG, "Documento actualizado");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Falla al actualizar", e);
+                                                }
+                                            });
+                                    notifyDataSetChanged();
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Falla al actualizar", e);
+                                }
+                            });
+                }else{
+                    mainActivity.mandarTexto("Tarea asignada por otro usuario");
+                }
             }
         });
     }

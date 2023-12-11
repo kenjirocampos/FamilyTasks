@@ -97,13 +97,27 @@
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/holo_green_light"
+                android:background="@android:color/transparent"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/design_default_color_secondary"
-                app:tabMode="fixed"
-                app:tabTextColor="@android:color/white" />
+                app:tabMode="auto"
+                app:tabTextColor="@color/black">
 
-            <androidx.viewpager.widget.ViewPager
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabItem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tareas_generales" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tabItem2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mis_tareas" />
+            </com.google.android.material.tabs.TabLayout>
+
+            <androidx.viewpager2.widget.ViewPager2
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="531dp" />

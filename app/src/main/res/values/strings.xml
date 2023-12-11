@@ -22,4 +22,5 @@
     <string name="Completo">Completo</string>
     <string name="Incompleto">Incompleto</string>
     <string name="estado_de_la_tarea">Estado de la tarea</string>
+    <string name="mis_tareas">Mis Tareas</string>
 </resources>

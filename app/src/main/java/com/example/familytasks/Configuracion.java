@@ -26,6 +26,7 @@ Button btnSalir;
 
             @Override
             public void onClick(View v) {
+                cerrarMain();
                 finish();
                 SharedPreferences preferences = getSharedPreferences(currentUser.getUid(), MODE_PRIVATE);
                 SharedPreferences.Editor editor = preferences.edit();
@@ -35,6 +36,12 @@ Button btnSalir;
                 startActivity(new Intent(Configuracion.this,LoginActivity.class));
             }
         });
+    }
+    public void cerrarMain(){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.familytasks.Adapter;
+package com.example.familytasks.Fragmentos;
 
 import static android.content.ContentValues.TAG;
 
@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.familytasks.Adapter.taskAdapter;
+import com.example.familytasks.MainActivity;
 import com.example.familytasks.Model.taskFamily;
 import com.example.familytasks.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,12 +38,20 @@ public class TareasGeneralesFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tareas_generales, container, false);
+        recyclerView = view.findViewById(R.id.rvGeneral);
+        cargarDatos();
+        return view;
+    }
+
+   public void cargarDatos() {
+       if (!isAdded()) {
+           return;
+       }
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        recyclerView = view.findViewById(R.id.rvGeneral);
         db = FirebaseFirestore.getInstance();
         list = new ArrayList<>();
-        taskAdapter1 = new taskAdapter(requireContext(), list);
+        taskAdapter1 = new taskAdapter((MainActivity) getActivity(),requireContext(), list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(taskAdapter1);
 
@@ -57,7 +67,7 @@ public class TareasGeneralesFragment extends Fragment {
                         String fechaInicio = document.getString("fechaInicio");
                         boolean estadoTarea = document.getBoolean("estadoTarea");
                         boolean estadoAsignado = document.getBoolean("estadoAsignado");
-                        String idUsuario = mAuth.getCurrentUser().getUid();
+                        String idUsuario = document.getString("idUsuario");
                         list.add(new taskFamily(nombreTarea, detalleTarea, fechaInicio, fechaTermino, estadoTarea, estadoAsignado, idTarea, idUsuario));
                         Log.d(TAG, document.getId() + " => " + document.getData());
                     }
@@ -67,9 +77,5 @@ public class TareasGeneralesFragment extends Fragment {
                 }
             }
         });
-
-        return view;
     }
-
-
 }
